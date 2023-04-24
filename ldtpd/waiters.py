@@ -20,11 +20,13 @@ Headers in this file shall remain intact.
 """
 
 wnckModule = False
-from utils import Utils
+from .utils import Utils
 import re
 import time
 try:
   # If we have gtk3+ gobject introspection, use that
+  import gi
+  gi.require_version('Wnck', '3.0')
   from gi.repository import Wnck as wnck
   from gi.repository import Gtk as gtk
   from gi.repository import GObject as gobject
@@ -48,7 +50,7 @@ import datetime
 _main_loop = None
 if not gtk3:
    _gtk_vers = gtk.ver
-   if _gtk_vers[0] <= 2 and _gtk_vers[1] <= 15:
+   if _gtk_vers is not None and _gtk_vers[0] <= 2 and _gtk_vers[1] <= 15:
        # Required for SLED11
       _main_loop = gobject.MainLoop()
 

@@ -21,7 +21,7 @@ Headers in this file shall remain intact.
 
 import re
 import pyatspi 
-from utils import Utils
+from .utils import Utils
 
 class Menu(Utils):
     def selectmenuitem(self, window_name, object_name):

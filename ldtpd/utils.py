@@ -31,6 +31,8 @@ import traceback
 import logging.handlers
 try:
   # If we have gtk3+ gobject introspection, use that
+  import gi
+  gi.require_version('Gdk', '3.0')
   from gi.repository import Gdk
   gtk3 = True
 except:
@@ -38,9 +40,9 @@ except:
   import gtk
   gtk3 = False
 from re import match as re_match
-from constants import abbreviated_roles
+from .constants import abbreviated_roles
 from fnmatch import translate as glob_trans
-from server_exception import LdtpServerException
+from .server_exception import LdtpServerException
 
 importStatGrab = False
 try:

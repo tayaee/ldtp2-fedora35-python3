@@ -30,14 +30,15 @@ import types
 import atexit
 import signal
 import socket
-import thread
+import _thread
 import logging
 import datetime
 import platform
 import tempfile
 import warnings
 import traceback
-import xmlrpclib
+# import xmlrpclib
+from twisted.web import xmlrpc
 import subprocess
 from log import logger
 from base64 import b64decode
@@ -71,7 +72,7 @@ if 'LDTP_WINDOWS' in os.environ or (sys.platform.find('darwin') == -1 and
 else:
    _ldtp_windows_env = False
 
-class _Method(xmlrpclib._Method):
+class _Method(xmlrpc._Method):
     def __call__(self, *args, **kwargs):
         if _ldtp_debug:
             logger.debug('%s(%s)' % (self.__name, \
@@ -79,7 +80,7 @@ class _Method(xmlrpclib._Method):
                                                                           for k, v in kwargs.items()])))
         return self.__send(self.__name, args[1:])
 
-class Transport(xmlrpclib.Transport):
+class Transport(xmlrpc.Transport):
     def _handle_signal(self, signum, frame):
         if _ldtp_debug:
             if signum == signal.SIGCHLD:
@@ -137,7 +138,7 @@ class Transport(xmlrpclib.Transport):
                 if _python26:
                     # Noticed this in Hutlab environment (Windows 7 SP1)
                     # Activestate python 2.5, use the old method
-                    return xmlrpclib.Transport.request(
+                    return xmlrpc.client.Transport.request(
                         self, host, handler, request_body, verbose=verbose)
                 # Follwing implementation not supported in Python <= 2.6
                 h = self.make_connection(host)
@@ -152,7 +153,7 @@ class Transport(xmlrpclib.Transport):
                 response = h.getresponse()
 
                 if response.status != 200:
-                    raise xmlrpclib.ProtocolError(host + handler, response.status,
+                    raise xmlrpc.ProtocolError(host + handler, response.status,
                                         response.reason, response.msg.headers)
 
                 payload = response.read()
@@ -192,7 +193,7 @@ class Transport(xmlrpclib.Transport):
                         raise
                 # else raise exception
                 raise
-            except xmlrpclib.Fault as e:
+            except xmlrpc.Fault as e:
                 if hasattr(self, 'close'):
                     self.close()
                 if e.faultCode == ERROR_CODE:

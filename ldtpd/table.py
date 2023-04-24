@@ -21,9 +21,9 @@ Headers in this file shall remain intact.
 import re
 import time
 import pyatspi 
-from utils import Utils
-from server_exception import LdtpServerException
-from keypress_actions import KeyComboAction, KeyPressAction, KeyReleaseAction
+from .utils import Utils
+from .server_exception import LdtpServerException
+from .keypress_actions import KeyComboAction, KeyPressAction, KeyReleaseAction
 
 class Table(Utils):
     def getrowcount(self, window_name, object_name):

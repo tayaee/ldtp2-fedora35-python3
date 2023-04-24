@@ -32,7 +32,9 @@ from ldtp.log import logger
 from ldtp.client_exception import LdtpExecutionError, ERROR_CODE
 
 try:
-    import xmlrpclib
+    # import xmlrpclib
+    from twisted.web import xmlrpc
+    pass
 except ImportError:
     import xmlrpc.client as xmlrpclib
 _python3 = False
@@ -66,7 +68,8 @@ if 'LDTP_WINDOWS' in os.environ or sys.platform.find('win') != -1:
 else:
    _ldtp_windows_env = False
 
-class _Method(xmlrpclib._Method):
+import xmlrpc.client
+class _Method(xmlrpc.client._Method):
     def __call__(self, *args, **kwargs):
         if _ldtp_debug:
             logger.debug('%s(%s)' % (self.__name, \
@@ -74,7 +77,7 @@ class _Method(xmlrpclib._Method):
                                                                           for k, v in kwargs.items()])))
         return self.__send(self.__name, args)
 
-class Transport(xmlrpclib.Transport):
+class Transport(xmlrpc.client.Transport):
     def _handle_signal(self, signum, frame):
         if _ldtp_debug:
             if signum == signal.SIGCHLD:
@@ -195,7 +198,7 @@ class Transport(xmlrpclib.Transport):
                         raise
                 # else raise exception
                 raise
-            except xmlrpclib.Fault as e:
+            except xmlrpc.client.Fault as e:
                 if hasattr(self, 'close'):
                     self.close()
                 if e.faultCode == ERROR_CODE:
@@ -219,9 +222,9 @@ class Transport(xmlrpclib.Transport):
         except AttributeError:
             pass
 
-class LdtpClient(xmlrpclib.ServerProxy):
+class LdtpClient(xmlrpc.client.ServerProxy):
     def __init__(self, uri, encoding=None, verbose=0, use_datetime=0):
-        xmlrpclib.ServerProxy.__init__(
+        xmlrpc.client.ServerProxy.__init__(
             self, uri, Transport(), encoding, verbose, 1, use_datetime)
 
     def __getattr__(self, name):

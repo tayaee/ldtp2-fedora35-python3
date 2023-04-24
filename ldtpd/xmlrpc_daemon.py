@@ -22,11 +22,11 @@ Headers in this file shall remain intact.
 import os
 import re
 import time
-import core
-from core import Ldtpd
+
 from twisted.web import xmlrpc
-import xmlrpclib
-from log import logger
+
+from .core import Ldtpd
+from .log import logger
 
 if 'LDTP_COMMAND_DELAY' in os.environ:
     delay = os.environ['LDTP_COMMAND_DELAY']
@@ -61,7 +61,7 @@ class XMLRPCLdtpd(Ldtpd, xmlrpc.XMLRPC, object):
         # If LDTP_DEBUG env set, then print verbose info on console
         def _ebRender(self, failure):
             """Custom error render method (used by our XMLRPC objects)"""
-            if isinstance(failure.value, xmlrpclib.Fault):
+            if isinstance(failure.value, xmlrpc.Fault):
                 return failure.value
 
             if hasattr(failure, 'getErrorMessage'):
@@ -69,13 +69,14 @@ class XMLRPCLdtpd(Ldtpd, xmlrpc.XMLRPC, object):
             else:
                 value = 'error'
 
-            return xmlrpclib.Fault(self.FAILURE, value)
+            return xmlrpc.Fault(self.FAILURE, value)
 
     def render_POST(self, request):
         request.content.seek(0, 0)
         request.setHeader("content-type", "text/xml")
         try:
-            args, functionPath = xmlrpclib.loads(request.content.read())
+            content = request.content.read()
+            args, functionPath = xmlrpc.client.loads(content)
             if args and isinstance(args[-1], dict):
                 # Passing args and kwargs to _ldtp_callback
                 # fail, so using self, kind of work around !

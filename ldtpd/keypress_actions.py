@@ -28,7 +28,7 @@ except:
 import pyatspi
 import subprocess
 
-from sequence_step import AtomicAction
+from .sequence_step import AtomicAction
 _ = lambda x: x
 
 # Highest granularity, define timing for every single press and release
@@ -62,7 +62,7 @@ def _get_keyboard_keycodes():
                             shell = True, close_fds = True).communicate()
   if output[0] != '':
     output = output[0]
-    for line in output.split('\n'):
+    for line in output.decode('utf-8').split('\n'):
       if line.strip() == '':
         continue
       split = re.split('=', line, maxsplit = 2)

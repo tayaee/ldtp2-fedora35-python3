@@ -21,8 +21,8 @@ Headers in this file shall remain intact.
 
 import time
 import pyatspi 
-from utils import Utils
-from server_exception import LdtpServerException
+from .utils import Utils
+from .server_exception import LdtpServerException
 
 class Mouse(Utils):
     """

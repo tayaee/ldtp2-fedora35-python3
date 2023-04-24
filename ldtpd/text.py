@@ -21,10 +21,10 @@ Headers in this file shall remain intact.
 
 import re
 import pyatspi 
-from utils import Utils
+from .utils import Utils
 from fnmatch import translate as glob_trans
-from server_exception import LdtpServerException
-from keypress_actions import KeyComboAction, KeyPressAction, KeyReleaseAction
+from .server_exception import LdtpServerException
+from .keypress_actions import KeyComboAction, KeyPressAction, KeyReleaseAction
 
 class Text(Utils):
     def generatekeyevent(self, data):

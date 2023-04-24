@@ -23,6 +23,8 @@ import gc
 import os
 try:
   # If we have gtk3+ gobject introspection, use that
+  import gi
+  gi.require_version('Gtk', '3.0')
   from gi.repository import Gtk as gtk, Gdk as gdk
   gtk3 = True
 except:
@@ -33,8 +35,8 @@ import pyatspi
 import tempfile
 from base64 import b64encode
 
-from utils import Utils
-from server_exception import LdtpServerException
+from .utils import Utils
+from .server_exception import LdtpServerException
 
 class Generic(Utils):
     def imagecapture(self, window_name = None, x = 0, y = 0,

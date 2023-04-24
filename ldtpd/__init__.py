@@ -35,7 +35,7 @@ class SignalParent:
         os.kill(int(self.parentpid), signal.SIGUSR1)
 
 
-from xmlrpc_daemon import XMLRPCLdtpd
+from .xmlrpc_daemon import XMLRPCLdtpd
 def main(port=4118, parentpid=None, XMLRPCLdtpdFactory=lambda: XMLRPCLdtpd()):
     import os
     os.environ['NO_GAIL'] = '1'
@@ -44,6 +44,8 @@ def main(port=4118, parentpid=None, XMLRPCLdtpdFactory=lambda: XMLRPCLdtpd()):
     import twisted
     gtkVersion = None
     try:
+        import gi
+        gi.require_version('Gtk', '3.0')
         from gi.repository import Gtk
         gtkVersion = Gtk._version
     except:
@@ -78,6 +80,7 @@ def main(port=4118, parentpid=None, XMLRPCLdtpdFactory=lambda: XMLRPCLdtpd()):
         if parentpid:
             reactor.callWhenRunning(SignalParent(parentpid).send_later)
         reactor.listenTCP(port, server.Site(r))
+        print(f'Running reactor on port {port}')
         reactor.run()
     except twisted.internet.error.CannotListenError:
         if _ldtp_debug:
@@ -88,3 +91,5 @@ def main(port=4118, parentpid=None, XMLRPCLdtpdFactory=lambda: XMLRPCLdtpd()):
         if _ldtp_debug_file:
             with open(_ldtp_debug_file, "a") as fp:
                 fp.write(traceback.format_exc())
+    except Exception as e:
+        print(f'__init__.py:94, {str(e)}')
