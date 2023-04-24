@@ -1,5 +1,5 @@
-virtualbox 6
-fedora 35
+Trying ldtp2 on virtualbox 6 fedora 35 + python 3.10
+
 sudo dnf install -y python3-wheel
 sudo dnf install -y gcc zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel git python3-cairo-devel cairo-gobject-devel gobject-introspection-devel
 /usr/bin/python -m venv venv
